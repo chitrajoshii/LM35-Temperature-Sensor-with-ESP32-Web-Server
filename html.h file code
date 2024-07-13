@@ -1,0 +1,91 @@
+const char html_page[] PROGMEM = R"rawString(
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temperature Monitor</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px; /* Add some padding around */
+      font-family: 'Arial', sans-serif;
+      background-color: #e4f5fc;
+      color: #555;
+      display: block; /* Change from flex to block */
+      //background-image: linear-gradient(to bottom, #cfd9df 0%, #e2ebf0 100%);
+    }
+    .container {
+      text-align: center;
+      padding: 2em;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: 20px auto; /* Adjust top margin, auto for horizontal centering */
+    }
+    h1 {
+      color: #0d47a1;
+      font-weight: 300;
+      margin-bottom: 0.3em;
+    }
+    .temperature {
+      display: inline-block;
+      background: #0d47a1;
+      color: #fff;
+      padding: 0.3em 1em;
+      border-radius: 5px;
+      margin: 0.5em 0;
+      font-size: 1.5em;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .temperature span {
+      display: block;
+      font-size: 3em;
+      font-weight: bold;
+    }
+    .degree-symbol {
+      font-size: 0.6em;
+      vertical-align: super;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 1em;
+        margin: 20px auto; /* Adjust for mobile */
+      }
+      .temperature span {
+        font-size: 2em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ESP32 LM35 Temperature</h1>
+    <div class="temperature">
+      <span id="TempValueCelsius">--</span>
+      <span class="degree-symbol">&deg;C</span>
+    </div>
+    <div class="temperature">
+      <span id="TempValueFahrenheit">--</span>
+      <span class="degree-symbol">&deg;F</span>
+    </div>
+  </div>
+ 
+  <script>
+    setInterval(function() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var data = JSON.parse(this.responseText);
+          document.getElementById("TempValueCelsius").innerHTML = data.celsius;
+          document.getElementById("TempValueFahrenheit").innerHTML = data.fahrenheit;
+        }
+      };
+      xhttp.open("GET", "readTemp", true);
+      xhttp.send();
+    }, 1000); // Refresh every 1 second
+  </script>
+</body>
+</html>
+)rawString";
